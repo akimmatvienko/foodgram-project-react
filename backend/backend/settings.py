@@ -154,6 +154,7 @@ DJOSER = {
     },
 
     'HIDE_USERS': False,
+    'LOGIN_FIELD': 'email'
 }
 
 
