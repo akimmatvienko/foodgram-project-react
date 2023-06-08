@@ -43,7 +43,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return self.username[:QUERY_SET_LENGTH]
+        return self.username
 
 
 class Subscribe(models.Model):
