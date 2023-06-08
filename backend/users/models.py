@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from backend.settings import QUERY_SET_LENGTH
+from django.db import models
+from settings import EMAIL_LENGTH, USER_FIELD_LENGTH
+
 from .validators import validate_me_name
 
 
@@ -12,26 +13,26 @@ class User(AbstractUser):
     email = models.EmailField(
         help_text='Ваш электронный адрес',
         verbose_name='Электронная почта',
-        max_length=254,
+        max_length=EMAIL_LENGTH,
         unique=True,
     )
 
     username = models.CharField(
         help_text='Ваш логин',
         verbose_name='Логин',
-        max_length=150,
+        max_length=USER_FIELD_LENGTH,
         unique=True,
         validators=[username_validator, validate_me_name],
     )
     first_name = models.CharField(
         help_text='Ваше имя',
         verbose_name='Имя',
-        max_length=150,
+        max_length=USER_FIELD_LENGTH,
     )
     last_name = models.CharField(
         help_text='Ваша фамилия',
         verbose_name='Фамилия',
-        max_length=150,
+        max_length=USER_FIELD_LENGTH,
     )
 
     USERNAME_FIELD = 'email'
