@@ -132,3 +132,4 @@ dmypy.json
 .idea
 infra/database
 /.vscode
+/recipes/management/

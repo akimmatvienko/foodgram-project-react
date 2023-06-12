@@ -1,9 +1,16 @@
-from djoser.serializers import \
-    UserCreateSerializer as DjoserUserCreateSerializer
-from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
+from djoser.serializers import (
+    UserSerializer as DjoserUserSerializer,
+    UserCreateSerializer as DjoserUserCreateSerializer
+)
 from rest_framework import serializers
+
+from recipes.models import (
+    Ingredient,
+    IngredientInRecipe,
+    Recipe,
+    Tag
+)
 from users.models import User
 
 FIELDS = ('email', 'id', 'username', 'first_name', 'last_name',)
@@ -173,8 +180,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'author'
         )
 
-    @staticmethod
-    def add_ingredients(recipe, ingredients):
+    def _add_ingredients(recipe, ingredients):
         ingredients_list = [
             IngredientInRecipe(
                 ingredient=Ingredient.objects.get(id=current_ingredient['id']),

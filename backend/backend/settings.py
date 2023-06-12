@@ -3,15 +3,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR.parent.parent, 'infra/.env'), verbose=True)
-
-
-SECRET_KEY = 'django-insecure-c*%j-6vruuci*4cm(^p!yam2+j@#9r4r4w!z2dpa@oufvjczdq'
-
 
 DEBUG = True
 
@@ -29,12 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
     'django_filters',
+    'djoser',
+    'users',
     'api',
     'recipes',
-    'users',
-    'dotenv',
 ]
 
 MIDDLEWARE = [
@@ -153,7 +146,6 @@ DJOSER = {
     'HIDE_USERS': False,
     'LOGIN_FIELD': 'email'
 }
-
 
 DEFAULT_FIELD_LENGTH = 200
 

@@ -1,34 +1,32 @@
-from backend.settings import (
-    DEFAULT_FIELD_LENGTH,
-    HEX_LENGTH,
-    MIN_VALUE,
-    MAX_COOKING_TIME,
-    MAX_AMOUNT,
-)
+import re
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db import models
 from django.core.validators import (
     MaxValueValidator,
     MinValueValidator,
     RegexValidator
 )
-from django.db import models
-from users.models import User
+
+User = get_user_model()
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=DEFAULT_FIELD_LENGTH)
+    name = models.CharField(max_length=settings.DEFAULT_FIELD_LENGTH)
     color = models.CharField(
         'Цвет в формате HEX',
-        max_length=HEX_LENGTH,
+        max_length=settings.HEX_LENGTH,
         null=True,
         validators=[
             RegexValidator(
-                regex="^#([A-Fa-f0-9]{6})$",
+                regex=r'^#[A-F0-9]{6}$',
+                flags=re.IGNORECASE,
                 message='Формат HEX: #______',
             )
         ],
     )
     slug = models.SlugField(
-        max_length=DEFAULT_FIELD_LENGTH,
+        max_length=settings.DEFAULT_FIELD_LENGTH,
         null=True,
         unique=True
     )
@@ -45,11 +43,11 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         'Название',
-        max_length=DEFAULT_FIELD_LENGTH,
+        max_length=settings.DEFAULT_FIELD_LENGTH,
     )
     measurement_unit = models.CharField(
         'Единица измерения',
-        max_length=DEFAULT_FIELD_LENGTH,
+        max_length=settings.DEFAULT_FIELD_LENGTH,
     )
 
     class Meta:
@@ -70,7 +68,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(
         'Название',
-        max_length=DEFAULT_FIELD_LENGTH
+        max_length=settings.DEFAULT_FIELD_LENGTH
     )
     text = models.TextField(
         'Описание'
@@ -94,21 +92,19 @@ class Recipe(models.Model):
         through='IngredientInRecipe',
         verbose_name='Ингредиенты',
     )
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveIntegerFiled(
         'Время в мин.',
         validators=[
             MinValueValidator(
-                MIN_VALUE,
+                settings.MIN_VALUE,
                 message=(
-                    f'Минимальное время приготовления в минутах: '
-                    f'{MIN_VALUE}'
+                    'Минимальное время приготовления в минутах: '
                 )
             ),
             MaxValueValidator(
-                MAX_COOKING_TIME,
+                settings.MAX_COOKING_TIME,
                 message=(
-                    f'Максимальное время приготовления в минутах: '
-                    f'{MAX_COOKING_TIME}'
+                    'Максимальное время приготовления в минутах:'
                 )
             )
         ]
@@ -145,21 +141,19 @@ class IngredientInRecipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
     )
-    amount = models.IntegerField(
+    amount = models.PositiveIntegerFiled(
         'Количество ингредиента',
         validators=[
             MinValueValidator(
-                MIN_VALUE,
+                settings.MIN_VALUE,
                 message=(
-                    f'Минимальное количество ингредиента: '
-                    f'{MIN_VALUE} ед.'
+                    'Минимальное количество ингредиента: 1'
                 )
             ),
             MaxValueValidator(
-                MAX_AMOUNT,
+                settings.MAX_AMOUNT,
                 message=(
-                    f'Максимальное количество ингредиента: '
-                    f'{MAX_AMOUNT} ед.'
+                    'Максимальное количество ингредиента: 3000'
                 )
             )
         ]

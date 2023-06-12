@@ -4,20 +4,31 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
-from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from users.models import Subscribe, User
 
 from .filters import IngredientSearch, RecipeFilter
 from .pagination import Paginator
 from .permissions import IsAuthorOrAdminOrReadOnly
-from .serializers import (IngredientSerializer, RecipeMinifiedSerializer,
-                          RecipeReadSerializer, RecipeWriteSerializer,
-                          TagSerializer, UserWithRecipesSerializer)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientInRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag
+)
+from .serializers import (
+    IngredientSerializer,
+    RecipeMinifiedSerializer,
+    RecipeReadSerializer,
+    RecipeWriteSerializer,
+    TagSerializer,
+    UserWithRecipesSerializer
+)
+from users.models import Subscribe, User
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -149,18 +160,41 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=False,
         permission_classes=(IsAuthenticated,)
     )
-    def download_shopping_cart(self, request):
+    def get_shopping_list(self, user):
         ingredients = (
             IngredientInRecipe.objects
-            .filter(recipe__shopping__user=request.user)
+            .filter(recipe__shopping__user=user)
             .values('ingredient__name', 'ingredient__measurement_unit')
             .annotate(amount=Sum('amount'))
         )
-        shopping_cart = [f'Список покупок {request.user}.\n']
+        shopping_list = []
+        for ingredient in ingredients:
+            shopping_list.append({
+                'name': ingredient['ingredient__name'],
+                'amount': ingredient['amount'],
+                'unit': ingredient['ingredient__measurement_unit']
+            })
+        return shopping_list
+
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
+    def form_shopping_cart(self, user):
+        ingredients = self.get_shopping_list(user)
+        shopping_cart = [f'Список покупок {user}.\n']
         shopping_cart.extend(
-            f'{ingredient["ingredient__name"]} - {ingredient["amount"]} {ingredient["ingredient__measurement_unit"]}\n'
+            f'{ingredient["name"]} - {ingredient["amount"]} {ingredient["unit"]}\n'
             for ingredient in ingredients
         )
+        return shopping_cart
+
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
+    def download_shopping_cart(self, request):
+        shopping_cart = self.form_shopping_cart(request.user)
         file = f'{request.user}_shopping_cart.txt'
         response = HttpResponse(shopping_cart, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={file}'
