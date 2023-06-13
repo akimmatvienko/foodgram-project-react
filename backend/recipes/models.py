@@ -1,12 +1,13 @@
 import re
+
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import (
     MaxValueValidator,
     MinValueValidator,
     RegexValidator
 )
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -19,7 +20,7 @@ class Tag(models.Model):
         null=True,
         validators=[
             RegexValidator(
-                regex=r'^#[A-F0-9]{6}$',
+                regex=r'^#[A-Fa-f0-9]{3}([A-Fa-f0-9]{3})?$',
                 flags=re.IGNORECASE,
                 message='Формат HEX: #______',
             )

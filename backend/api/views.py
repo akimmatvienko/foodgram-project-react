@@ -2,16 +2,15 @@ from django.db import IntegrityError
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet as DjoserUserViewSet
+
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
-from .filters import IngredientSearch, RecipeFilter
-from .pagination import Paginator
-from .permissions import IsAuthorOrAdminOrReadOnly
+from djoser.views import UserViewSet as DjoserUserViewSet
+
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -20,6 +19,9 @@ from recipes.models import (
     ShoppingCart,
     Tag
 )
+from .filters import IngredientSearch, RecipeFilter
+from .pagination import Paginator
+from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (
     IngredientSerializer,
     RecipeMinifiedSerializer,
@@ -28,6 +30,7 @@ from .serializers import (
     TagSerializer,
     UserWithRecipesSerializer
 )
+
 from users.models import Subscribe, User
 
 
@@ -176,10 +179,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             })
         return shopping_list
 
-    @action(
-        detail=False,
-        permission_classes=(IsAuthenticated,)
-    )
     def form_shopping_cart(self, user):
         ingredients = self.get_shopping_list(user)
         shopping_cart = [f'Список покупок {user}.\n']
