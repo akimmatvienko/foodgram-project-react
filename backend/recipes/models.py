@@ -93,7 +93,7 @@ class Recipe(models.Model):
         through='IngredientInRecipe',
         verbose_name='Ингредиенты',
     )
-    cooking_time = models.PositiveIntegerFiled(
+    cooking_time = models.PositiveIntegerField(
         'Время в мин.',
         validators=[
             MinValueValidator(
@@ -142,7 +142,7 @@ class IngredientInRecipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
     )
-    amount = models.PositiveIntegerFiled(
+    amount = models.PositiveIntegerField(
         'Количество ингредиента',
         validators=[
             MinValueValidator(
