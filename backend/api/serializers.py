@@ -180,7 +180,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'author'
         )
 
-
     def _add_ingredients(self, recipe, ingredients):
         ingredients_list = [
             IngredientInRecipe(

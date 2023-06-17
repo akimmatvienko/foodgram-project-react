@@ -181,7 +181,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = self.get_shopping_list(user)
         shopping_cart = [f'Список покупок {user}.\n']
         shopping_cart.extend(
-            f'{ingredient["name"]} - {ingredient["amount"]} {ingredient["unit"]}\n'
+            f'{ingredient["name"]} - {ingredient["amount"]}'
+            f'{ingredient["unit"]}\n'
             for ingredient in ingredients
         )
         return shopping_cart
