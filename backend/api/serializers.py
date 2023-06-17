@@ -180,7 +180,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'author'
         )
 
-    def _add_ingredients(recipe, ingredients):
+
+    def _add_ingredients(self, recipe, ingredients):
         ingredients_list = [
             IngredientInRecipe(
                 ingredient=Ingredient.objects.get(id=current_ingredient['id']),
@@ -198,7 +199,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             **validated_data
         )
         recipe.tags.set(tags)
-        self.add_ingredients(recipe, ingredients)
+        self._add_ingredients(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
@@ -207,7 +208,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance.ingredients.clear()
         instance.tags.set(tags)
-        self.add_ingredients(instance, ingredients)
+        self._add_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
