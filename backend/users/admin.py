@@ -15,7 +15,8 @@ class UserAdmin(UserAdmin):
 
     change_password_link.short_description = 'Change password'
     list_display = (
-        'is_active', 'username', 'first_name', 'last_name', 'email',
+        'is_active', 'username', 'first_name',
+        'last_name', 'email', 'change_password_link'
     )
     fields = (
         ('is_active', ),
