@@ -1,6 +1,5 @@
 from django.contrib.admin import register
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -32,6 +31,7 @@ class UserAdmin(UserAdmin):
         'is_active', 'first_name', 'email',
     )
     save_on_top = True
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
